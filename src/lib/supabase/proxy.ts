@@ -28,13 +28,16 @@ export async function updateSession(request: NextRequest) {
 	} = await supabase.auth.getUser()
 
 	const isAuthPage =
+		request.nextUrl.pathname === '/' ||
 		request.nextUrl.pathname.startsWith('/login') ||
 		request.nextUrl.pathname.startsWith('/register') ||
 		request.nextUrl.pathname.startsWith('/check-email') ||
+		request.nextUrl.pathname.startsWith('/forgot-password') ||
+		request.nextUrl.pathname.startsWith('/reset-password') ||
 		request.nextUrl.pathname.startsWith('/auth/callback')
 
 	if (!user && !isAuthPage) {
-		return NextResponse.redirect(new URL('/login', request.url))
+		return NextResponse.redirect(new URL('/board', request.url))
 	}
 
 	if (user && isAuthPage) {

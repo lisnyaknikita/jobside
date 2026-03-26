@@ -1,8 +1,8 @@
 import { GalleryVerticalEndIcon } from 'lucide-react'
 import Link from 'next/link'
-import { LoginForm } from './components/login-form/login-form'
+import { ResetPasswordForm } from './components/reset-password-form/reset-password-form'
 
-export default function LoginPage() {
+export default function ResetPasswordPage() {
 	return (
 		<div className='flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10'>
 			<div className='flex w-full max-w-sm flex-col gap-6'>
@@ -12,7 +12,7 @@ export default function LoginPage() {
 					</div>
 					Jobside
 				</Link>
-				<LoginForm />
+				<ResetPasswordForm />
 			</div>
 		</div>
 	)
