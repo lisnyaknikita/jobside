@@ -1,23 +1,27 @@
 'use client'
 
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from '@/components/ui/sidebar'
 import {
-	BarChart3,
-	Briefcase,
-	FileDown,
-	GalleryVerticalEndIcon,
-	KanbanIcon,
-	Sparkles,
-	UserCircle,
-	Users2,
-} from 'lucide-react'
+	Sidebar,
+	SidebarContent,
+	SidebarFooter,
+	SidebarGroup,
+	SidebarGroupLabel,
+	SidebarHeader,
+	SidebarMenu,
+	SidebarMenuButton,
+	SidebarMenuItem,
+	useSidebar,
+} from '@/components/ui/sidebar'
+import { cn } from '@/lib/utils'
+import { BarChart3, Briefcase, FileDown, GalleryVerticalEndIcon, KanbanIcon, Sparkles, Users2 } from 'lucide-react'
 import Link from 'next/link'
 import { TeamSwitcher } from './team-switcher/team-switcher'
+import { UserButton } from './user-button/user-button'
 
 const data = {
 	user: {
-		name: 'Ivan Developer',
-		email: 'ivan@example.com',
+		name: 'Nikita',
+		email: 'test@example.com',
 		avatar: '/avatars/user.jpg',
 	},
 
@@ -35,35 +39,14 @@ const data = {
 	],
 	navMain: [
 		{
-			title: 'Board',
-			url: '/board',
-			icon: KanbanIcon,
-			isActive: true,
-			items: [
-				{ title: 'Active Board', url: '/board' },
-				{ title: 'Archived Jobs', url: '/board/archive' },
-				{ title: 'Custom Columns', url: '/board/settings' },
-			],
+			title: 'Workflow',
+			url: '/workflow',
+			icon: Briefcase,
 		},
 		{
 			title: 'AI Lab',
-			url: '#',
+			url: '/ai-lab',
 			icon: Sparkles,
-			items: [
-				{ title: 'Cover Letter Gen', url: '/ai/cover-letter' },
-				{ title: 'Resume Tailor', url: '/ai/resume' },
-				{ title: 'Interview Prep', url: '/ai/prep' },
-			],
-		},
-		{
-			title: 'Knowledge Base',
-			url: '#',
-			icon: UserCircle,
-			items: [
-				{ title: 'My Profile (Experience)', url: '/profile/edit' },
-				{ title: 'Education & Skills', url: '/profile/skills' },
-				{ title: 'Standard Templates', url: '/profile/templates' },
-			],
 		},
 	],
 	secondary: [
@@ -86,26 +69,43 @@ const data = {
 }
 
 export function AppSidebar() {
+	const { state } = useSidebar()
+	const collapsed = state === 'collapsed'
+
 	return (
-		<Sidebar>
+		<Sidebar collapsible='icon'>
 			<SidebarHeader>
-				<Link href='/' className='flex items-center gap-2 self-center font-medium'>
-					<div className='flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground'>
-						<GalleryVerticalEndIcon className='size-4' />
+				<Link
+					href='/'
+					className={cn('flex items-center gap-2 self-center font-medium mb-10 mt-2 p-2', collapsed && 'p-0')}
+				>
+					<div className='flex size-8 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground'>
+						<GalleryVerticalEndIcon className={cn('size-5', collapsed && 'size-4')} />
 					</div>
-					Jobside
+					{!collapsed && <span className='text-2xl'>Jobside</span>}
 				</Link>
 				<TeamSwitcher teams={data.campaigns} />
 			</SidebarHeader>
 			<SidebarContent>
-				{/* Основная навигация (Board, AI, Knowledge Base) */}
-				{/* <NavMain items={data.navMain} /> */}
-				{/* Вторичные инструменты (Contacts, Stats, Export) */}
-				{/* <NavProjects projects={data.secondary} /> */}
-				{/* <SidebarGroup />
-				<SidebarGroup /> */}
+				<SidebarGroup>
+					<SidebarGroupLabel>Application</SidebarGroupLabel>
+					<SidebarMenu>
+						{data.navMain.map(item => (
+							<SidebarMenuItem key={item.title}>
+								<SidebarMenuButton asChild>
+									<Link href={item.url}>
+										{item.icon && <item.icon className='size-4' />}
+										<span>{item.title}</span>
+									</Link>
+								</SidebarMenuButton>
+							</SidebarMenuItem>
+						))}
+					</SidebarMenu>
+				</SidebarGroup>
 			</SidebarContent>
-			<SidebarFooter>{/* <NavUser user={data.user} /> */}</SidebarFooter>
+			<SidebarFooter>
+				<UserButton user={data.user} />
+			</SidebarFooter>
 		</Sidebar>
 	)
 }
