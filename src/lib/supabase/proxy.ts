@@ -37,7 +37,7 @@ export async function updateSession(request: NextRequest) {
 		request.nextUrl.pathname.startsWith('/auth/callback')
 
 	if (!user && !isAuthPage) {
-		return NextResponse.redirect(new URL('/board', request.url))
+		return NextResponse.redirect(new URL('/login', request.url))
 	}
 
 	if (user && isAuthPage) {

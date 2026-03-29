@@ -39,7 +39,7 @@ export function ForgotPasswordForm({ className, ...props }: React.ComponentProps
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<Button variant='outline' className='w-full'>
+						<Button variant='outline' className='w-full' asChild>
 							<Link href='/login'>Back to login</Link>
 						</Button>
 					</CardContent>

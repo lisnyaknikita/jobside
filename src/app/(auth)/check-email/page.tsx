@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { FieldDescription } from '@/components/ui/field'
 import { GalleryVerticalEndIcon } from 'lucide-react'
 import Link from 'next/link'
-
+//TODO: CodeRabbit report
 export default function CheckEmailPage() {
 	return (
 		<div className='flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10'>
@@ -23,7 +23,7 @@ export default function CheckEmailPage() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent className='grid gap-4'>
-						<Button variant='outline' className='w-full'>
+						<Button variant='outline' className='w-full' asChild>
 							<Link href='/login'>Back to login</Link>
 						</Button>
 					</CardContent>
