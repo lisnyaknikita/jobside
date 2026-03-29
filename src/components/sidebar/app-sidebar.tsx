@@ -5,18 +5,13 @@ import { SidebarNav } from './sidebar-nav/sidebar-nav'
 import { SpaceSwitcher } from './space-switcher/space-switcher'
 import { UserButton } from './user-button/user-button'
 
-const spaces = [
-	{ id: '1', name: 'Frontend 2026', plan: 'Main Search' },
-	{ id: '2', name: 'Freelance/Part-time', plan: 'Side Projects' },
-]
-
 export async function AppSidebar() {
 	const supabase = await createClient()
 
 	const {
 		data: { user },
 	} = await supabase.auth.getUser()
-	const { data: spaces } = await supabase.from('spaces').select('id, name').order('position')
+	const { data: spaces } = await supabase.from('spaces').select('id, name, icon').order('position')
 
 	const userData = {
 		name: user?.user_metadata?.full_name ?? 'User',
