@@ -1,7 +1,6 @@
 'use client'
 
-import { ChevronsUpDown, Plus } from 'lucide-react'
-import * as React from 'react'
+import { ChevronsUpDown, Kanban, Plus } from 'lucide-react'
 
 import {
 	DropdownMenu,
@@ -9,22 +8,29 @@ import {
 	DropdownMenuItem,
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
-	DropdownMenuShortcut,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar'
+import { Space } from '@/types/space'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
-export function TeamSwitcher({
-	teams,
-}: {
-	teams: {
-		name: string
-		logo: React.ElementType
-		plan: string
-	}[]
-}) {
+interface SpaceSwitcherProps {
+	spaces: Space[]
+	activeSpaceId: string
+}
+
+export function SpaceSwitcher({ spaces, activeSpaceId }: SpaceSwitcherProps) {
 	const { isMobile } = useSidebar()
-	const [activeTeam, setActiveTeam] = React.useState(teams[0])
+	const router = useRouter()
+	const [activeId, setActiveId] = useState(activeSpaceId)
+
+	const activeSpace = spaces.find(s => s.id === activeId) ?? spaces[0]
+
+	function handleSelect(space: Space) {
+		setActiveId(space.id)
+		router.push(`/workflow?space=${space.id}`)
+	}
 
 	return (
 		<SidebarMenu>
@@ -36,11 +42,11 @@ export function TeamSwitcher({
 							className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
 						>
 							<div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground'>
-								<activeTeam.logo className='size-4' />
+								<Kanban className='size-4' />
 							</div>
 							<div className='grid flex-1 text-left text-sm leading-tight'>
-								<span className='truncate font-semibold'>{activeTeam.name}</span>
-								<span className='truncate text-xs'>{activeTeam.plan}</span>
+								<span className='truncate font-semibold'>{activeSpace?.name}</span>
+								<span className='truncate text-xs text-muted-foreground'>Space</span>
 							</div>
 							<ChevronsUpDown className='ml-auto' />
 						</SidebarMenuButton>
@@ -52,17 +58,16 @@ export function TeamSwitcher({
 						sideOffset={4}
 					>
 						<DropdownMenuLabel className='text-xs text-muted-foreground'>Spaces</DropdownMenuLabel>
-						{teams.map((team, index) => (
-							<DropdownMenuItem key={team.name} onClick={() => setActiveTeam(team)} className='gap-2 p-2'>
+						{spaces.map(space => (
+							<DropdownMenuItem key={space.id} onClick={() => handleSelect(space)} className='gap-2 p-2 cursor-pointer'>
 								<div className='flex size-6 items-center justify-center rounded-md border'>
-									<team.logo className='size-4 shrink-0' />
+									<Kanban className='size-4 shrink-0' />
 								</div>
-								{team.name}
-								<DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+								{space.name}
 							</DropdownMenuItem>
 						))}
 						<DropdownMenuSeparator />
-						<DropdownMenuItem className='gap-2 p-2'>
+						<DropdownMenuItem className='gap-2 p-2 cursor-pointer' onClick={() => router.push('/workflow/new-space')}>
 							<div className='flex size-6 items-center justify-center rounded-md border bg-background'>
 								<Plus className='size-4' />
 							</div>
