@@ -4,28 +4,18 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { loginAction } from '@/lib/actions/auth'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) {
-	const router = useRouter()
-	const [email, setEmail] = useState('')
-	const [password, setPassword] = useState('')
 	const [error, setError] = useState<string | null>(null)
 
-	async function handleLogin(e: React.FormEvent) {
-		e.preventDefault()
-
-		const supabase = createClient()
-		const { error } = await supabase.auth.signInWithPassword({ email, password })
-		if (error) {
-			setError(error.message)
-			return
-		}
-		router.push('/board')
+	async function handleSubmit(formData: FormData) {
+		const result = await loginAction(formData)
+		if (result?.error) setError(result.error)
 	}
 
 	async function handleGoogleLogin() {
@@ -37,6 +27,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
 			},
 		})
 	}
+
 	return (
 		<div className={cn('flex flex-col gap-6', className)} {...props}>
 			<Card>
@@ -45,7 +36,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
 					<CardDescription>Login with your Google account</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<form>
+					<form action={handleSubmit}>
 						<FieldGroup>
 							<Field>
 								<Button variant='outline' type='button' onClick={handleGoogleLogin}>
@@ -64,34 +55,19 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
 							{error && <p className='text-red-500 text-sm'>{error}</p>}
 							<Field>
 								<FieldLabel htmlFor='email'>Email</FieldLabel>
-								<Input
-									id='email'
-									type='email'
-									placeholder='m@example.com'
-									value={email}
-									onChange={e => setEmail(e.target.value)}
-									required
-								/>
+								<Input id='email' type='email' name='email' placeholder='m@example.com' required />
 							</Field>
 							<Field>
 								<div className='flex items-center'>
 									<FieldLabel htmlFor='password'>Password</FieldLabel>
-									<Link href='#' className='ml-auto text-sm underline-offset-4 hover:underline'>
+									<Link href='/forgot-password' className='ml-auto text-sm underline-offset-4 hover:underline'>
 										Forgot your password?
 									</Link>
 								</div>
-								<Input
-									id='password'
-									type='password'
-									value={password}
-									onChange={e => setPassword(e.target.value)}
-									required
-								/>
+								<Input id='password' type='password' name='password' required />
 							</Field>
 							<Field>
-								<Button type='submit' onClick={handleLogin}>
-									Login
-								</Button>
+								<Button type='submit'>Login</Button>
 								<FieldDescription className='text-center'>
 									Don&apos;t have an account? <Link href='/register'>Sign up</Link>
 								</FieldDescription>
