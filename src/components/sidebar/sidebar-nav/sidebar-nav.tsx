@@ -22,7 +22,7 @@ export const SidebarNav = () => {
 	return (
 		<SidebarGroup>
 			<SidebarGroupLabel>Application</SidebarGroupLabel>
-			<SidebarMenu>
+			<SidebarMenu className='flex flex-col gap-2'>
 				{navItems.map(item => (
 					<SidebarMenuItem key={item.title}>
 						<SidebarMenuButton asChild isActive={pathname.startsWith(item.url)}>

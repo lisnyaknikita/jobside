@@ -23,7 +23,7 @@ export async function AppSidebar() {
 		<Sidebar collapsible='icon'>
 			<SidebarHeader>
 				<Logo />
-				<SpaceSwitcher spaces={spaces ?? []} activeSpaceId={spaces?.[0]?.id ?? ''} />
+				<SpaceSwitcher spaces={spaces ?? []} />
 			</SidebarHeader>
 			<SidebarContent>
 				<SidebarNav />
