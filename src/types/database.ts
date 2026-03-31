@@ -21,6 +21,7 @@ export type Database = {
           is_default: boolean
           name: string
           position: number
+          space_id: string | null
           type: string
           user_id: string
         }
@@ -30,6 +31,7 @@ export type Database = {
           is_default?: boolean
           name: string
           position?: number
+          space_id?: string | null
           type?: string
           user_id: string
         }
@@ -39,10 +41,18 @@ export type Database = {
           is_default?: boolean
           name?: string
           position?: number
+          space_id?: string | null
           type?: string
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "columns_space_id_fkey"
+            columns: ["space_id"]
+            isOneToOne: false
+            referencedRelation: "spaces"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "columns_user_id_fkey"
             columns: ["user_id"]
@@ -77,6 +87,38 @@ export type Database = {
             columns: ["vacancy_id"]
             isOneToOne: false
             referencedRelation: "vacancies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      spaces: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+          position: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+          position?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+          position?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "spaces_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -133,6 +175,7 @@ export type Database = {
           id: string
           order: number
           position: string
+          space_id: string | null
           url: string | null
           user_id: string
         }
@@ -145,6 +188,7 @@ export type Database = {
           id?: string
           order?: number
           position: string
+          space_id?: string | null
           url?: string | null
           user_id: string
         }
@@ -157,6 +201,7 @@ export type Database = {
           id?: string
           order?: number
           position?: string
+          space_id?: string | null
           url?: string | null
           user_id?: string
         }
@@ -166,6 +211,13 @@ export type Database = {
             columns: ["column_id"]
             isOneToOne: false
             referencedRelation: "columns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vacancies_space_id_fkey"
+            columns: ["space_id"]
+            isOneToOne: false
+            referencedRelation: "spaces"
             referencedColumns: ["id"]
           },
           {

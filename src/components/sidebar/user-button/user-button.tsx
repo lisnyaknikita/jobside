@@ -14,6 +14,7 @@ import {
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar'
 import { logoutAction } from '@/lib/actions/auth'
 import { BadgeCheck, ChevronsUpDown, LogOut, Settings } from 'lucide-react'
+import { ModeToggle } from '../mode-toggle/mode-toggle'
 
 export function UserButton({ user }: { user: { name: string; email: string; avatar: string } }) {
 	const { isMobile } = useSidebar()
@@ -30,7 +31,7 @@ export function UserButton({ user }: { user: { name: string; email: string; avat
 							>
 								<Avatar className='h-8 w-8 rounded-lg'>
 									<AvatarImage src={user.avatar} alt={user.name} />
-									<AvatarFallback className='rounded-lg'>ID</AvatarFallback>
+									<AvatarFallback className='rounded-lg'>{user.name[0].toUpperCase()}</AvatarFallback>
 								</Avatar>
 								<div className='grid flex-1 text-left text-sm leading-tight'>
 									<span className='truncate font-semibold'>{user.name}</span>
@@ -49,7 +50,7 @@ export function UserButton({ user }: { user: { name: string; email: string; avat
 								<div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
 									<Avatar className='h-8 w-8 rounded-lg'>
 										<AvatarImage src={user.avatar} alt={user.name} />
-										<AvatarFallback className='rounded-lg'>ID</AvatarFallback>
+										<AvatarFallback className='rounded-lg'>{user.name[0].toUpperCase()}</AvatarFallback>
 									</Avatar>
 									<div className='grid flex-1 text-left text-sm leading-tight'>
 										<span className='truncate font-semibold'>{user.name}</span>
@@ -85,7 +86,10 @@ export function UserButton({ user }: { user: { name: string; email: string; avat
 							<DialogTitle>Settings</DialogTitle>
 						</DialogHeader>
 						<div className='grid gap-4 py-4'>
-							<p className='text-sm text-muted-foreground'>Settings</p>
+							<div className='flex justify-between items-center'>
+								<p className='text-sm text-muted-foreground'>Color theme</p>
+								<ModeToggle />
+							</div>
 						</div>
 					</DialogContent>
 				</Dialog>

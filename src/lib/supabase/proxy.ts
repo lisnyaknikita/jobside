@@ -41,7 +41,7 @@ export async function updateSession(request: NextRequest) {
 	}
 
 	if (user && isAuthPage) {
-		return NextResponse.redirect(new URL('/board', request.url))
+		return NextResponse.redirect(new URL('/workflow', request.url))
 	}
 
 	return supabaseResponse
