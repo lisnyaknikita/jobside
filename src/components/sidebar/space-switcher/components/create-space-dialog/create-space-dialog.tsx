@@ -32,7 +32,7 @@ export function CreateSpaceDialog({
 				</DialogHeader>
 				<form action={onSubmit} className='flex flex-col gap-4'>
 					{error && <p className='text-sm text-destructive'>{error}</p>}
-					<Input name='name' placeholder='e.g. Frontend 2026' required autoFocus />
+					<Input name='name' placeholder='e.g. Frontend' required autoFocus />
 					<div className='flex flex-col gap-2'>
 						<span className='text-sm text-muted-foreground'>Icon</span>
 						<div className='grid grid-cols-5 gap-2 justify-items-center'>

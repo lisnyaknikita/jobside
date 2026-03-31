@@ -1,6 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
+import { resolveActiveSpace } from '@/lib/utils/resolve-active-space'
 import { SetLastSpace } from './components/set-last-space/set-last-space'
 
 interface WorkflowPageProps {
@@ -9,27 +7,9 @@ interface WorkflowPageProps {
 
 export default async function WorkflowPage({ searchParams }: WorkflowPageProps) {
 	const { space: spaceId } = await searchParams
-	const supabase = await createClient()
+	const space = await resolveActiveSpace(spaceId)
 
-	const cookieStore = await cookies()
-
-	if (!spaceId) {
-		const lastSpaceId = cookieStore.get('last_space_id')?.value
-
-		if (lastSpaceId) {
-			const { data: lastSpace } = await supabase.from('spaces').select('id').eq('id', lastSpaceId).single()
-
-			if (lastSpace) redirect(`/workflow?space=${lastSpace.id}`)
-		}
-
-		const { data: firstSpace } = await supabase.from('spaces').select('id').order('position').limit(1).single()
-
-		if (firstSpace) redirect(`/workflow?space=${firstSpace.id}`)
-	}
-
-	const { data: space } = await supabase.from('spaces').select('id, name').eq('id', spaceId!).single()
-
-	if (!space) redirect('/workflow')
+	if (!space) return null
 
 	return (
 		<div className='flex flex-col h-full p-6'>

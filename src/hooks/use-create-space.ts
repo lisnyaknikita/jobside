@@ -1,6 +1,7 @@
 'use client'
 
-import { createSpaceAction, IconOption } from '@/lib/actions/spaces'
+import { createSpaceAction } from '@/lib/actions/spaces'
+import { type IconOption } from '@/lib/constants/icons'
 import { useState } from 'react'
 
 export function useCreateSpace() {
