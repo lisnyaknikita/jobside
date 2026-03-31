@@ -14,10 +14,15 @@ export function useCreateSpace() {
 		setError(null)
 		formData.set('icon', selectedIcon)
 		const result = await createSpaceAction(formData)
+
 		if (result?.error) {
 			setError(result.error)
 			setLoading(false)
+			return { error: result.error }
 		}
+
+		setLoading(false)
+		return { data: result.data }
 	}
 
 	return { selectedIcon, setSelectedIcon, error, loading, handleCreate }

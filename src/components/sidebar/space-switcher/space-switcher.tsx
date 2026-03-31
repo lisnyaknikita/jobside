@@ -27,11 +27,25 @@ export function SpaceSwitcher({ spaces }: SpaceSwitcherProps) {
 	const { isMobile } = useSidebar()
 	const router = useRouter()
 	const searchParams = useSearchParams()
-	const [dialogOpen, setDialogOpen] = useState(false)
+	const [dialogOpen, setDialogOpen] = useState(spaces.length === 0)
+
+	const isMandatoryOpen = spaces.length === 0
+
+	const effectiveOpen = isMandatoryOpen || dialogOpen
 
 	const { selectedIcon, setSelectedIcon, error, loading, handleCreate } = useCreateSpace()
 
-	const activeId = searchParams.get('space') ?? spaces[0]?.id
+	async function onFormSubmit(formData: FormData) {
+		const result = await handleCreate(formData)
+
+		if (result?.data) {
+			setDialogOpen(false)
+			router.push(`/workflow?space=${result.data.id}`)
+			router.refresh()
+		}
+	}
+
+	const activeId = searchParams.get('space')
 	const activeSpace = spaces.find(s => s.id === activeId) ?? spaces[0]
 	const ActiveIcon =
 		activeSpace?.icon && activeSpace.icon in ICON_MAP ? ICON_MAP[activeSpace.icon as IconOption] : Kanban
@@ -54,7 +68,7 @@ export function SpaceSwitcher({ spaces }: SpaceSwitcherProps) {
 									<ActiveIcon className='size-4' />
 								</div>
 								<div className='grid flex-1 text-left text-sm leading-tight'>
-									<span className='truncate font-semibold'>{activeSpace?.name}</span>
+									<span className='truncate font-semibold'>{activeSpace?.name ?? 'No Space Selected'}</span>
 									<span className='truncate text-xs text-muted-foreground'>Space</span>
 								</div>
 								<ChevronsUpDown className='ml-auto' />
@@ -67,39 +81,43 @@ export function SpaceSwitcher({ spaces }: SpaceSwitcherProps) {
 							sideOffset={4}
 						>
 							<DropdownMenuLabel className='text-xs text-muted-foreground'>Spaces</DropdownMenuLabel>
-							{spaces.map(space => {
-								const Icon = space.icon in ICON_MAP ? ICON_MAP[space.icon as IconOption] : Kanban
-								const isActive = space.id === activeId
+							{spaces.length > 0 ? (
+								spaces.map(space => {
+									const Icon = space.icon in ICON_MAP ? ICON_MAP[space.icon as IconOption] : Kanban
+									const isActive = space.id === activeId
 
-								return (
-									<div
-										key={space.id}
-										className='relative flex items-center group/item px-1 py-0.5 rounded-md hover:bg-accent/50 focus-within:bg-accent/50 transition-colors'
-									>
-										<DropdownMenuItem
-											onClick={() => handleSelect(space)}
-											className='flex-1 gap-2 p-2 cursor-pointer focus:bg-transparent hover:bg-transparent data-[state=open]:bg-transparent outline-none'
+									return (
+										<div
+											key={space.id}
+											className='relative flex items-center group/item px-1 py-0.5 rounded-md hover:bg-accent/50 focus-within:bg-accent/50 transition-colors'
 										>
-											<div className='flex size-6 items-center justify-center rounded-md border border-neutral-200 dark:border-neutral-800 bg-background'>
-												<Icon className='size-4 shrink-0' />
-											</div>
-											<span className='flex-1 truncate pr-8'>{space.name}</span>
-										</DropdownMenuItem>
-										<SpaceItemMenu
-											space={space}
-											isActive={isActive}
-											trigger={
-												<button
-													type='button'
-													className='absolute right-2.5 opacity-0 group-hover/item:opacity-100 focus-within:opacity-100 transition-opacity flex items-center justify-center size-6 rounded hover:bg-neutral-200 dark:hover:bg-neutral-700 outline-none focus-visible:ring-1 focus-visible:ring-ring text-muted-foreground'
-												>
-													<MoreHorizontal className='size-4' />
-												</button>
-											}
-										/>
-									</div>
-								)
-							})}
+											<DropdownMenuItem
+												onClick={() => handleSelect(space)}
+												className='flex-1 gap-2 p-2 cursor-pointer focus:bg-transparent hover:bg-transparent data-[state=open]:bg-transparent outline-none'
+											>
+												<div className='flex size-6 items-center justify-center rounded-md border border-neutral-200 dark:border-neutral-800 bg-background'>
+													<Icon className='size-4 shrink-0' />
+												</div>
+												<span className='flex-1 truncate pr-8'>{space.name}</span>
+											</DropdownMenuItem>
+											<SpaceItemMenu
+												space={space}
+												isActive={isActive}
+												trigger={
+													<button
+														type='button'
+														className='absolute right-2.5 opacity-0 group-hover/item:opacity-100 focus-within:opacity-100 transition-opacity flex items-center justify-center size-6 rounded hover:bg-neutral-200 dark:hover:bg-neutral-700 outline-none focus-visible:ring-1 focus-visible:ring-ring text-muted-foreground'
+													>
+														<MoreHorizontal className='size-4' />
+													</button>
+												}
+											/>
+										</div>
+									)
+								})
+							) : (
+								<div className='p-2 text-xs text-center text-muted-foreground'>Create your first space to start</div>
+							)}
 							<DropdownMenuSeparator />
 							<DropdownMenuItem
 								className='gap-2 p-2 cursor-pointer'
@@ -118,11 +136,15 @@ export function SpaceSwitcher({ spaces }: SpaceSwitcherProps) {
 				</SidebarMenuItem>
 			</SidebarMenu>
 			<CreateSpaceDialog
-				open={dialogOpen}
-				onOpenChange={setDialogOpen}
+				open={effectiveOpen}
+				onOpenChange={open => {
+					if (!isMandatoryOpen) {
+						setDialogOpen(open)
+					}
+				}}
 				selectedIcon={selectedIcon}
 				onSelectIcon={setSelectedIcon}
-				onSubmit={handleCreate}
+				onSubmit={onFormSubmit}
 				loading={loading}
 				error={error}
 			/>
