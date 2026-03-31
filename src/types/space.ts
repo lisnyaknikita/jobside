@@ -1,4 +1,4 @@
-import { IconOption } from '@/lib/actions/spaces'
+import { IconOption } from '@/lib/constants/icons'
 
 export interface Space {
 	id: string
