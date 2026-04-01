@@ -7,7 +7,6 @@ export type Column = {
 
 export type Vacancy = {
 	id: string
-	column_id: string | null
 	position: string
 	company: string
 	description: string | null
@@ -15,4 +14,5 @@ export type Vacancy = {
 	order: number
 	deadline: string | null
 	created_at: string
+	column_id: string
 }

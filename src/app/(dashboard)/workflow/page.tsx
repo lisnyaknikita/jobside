@@ -35,7 +35,12 @@ export default async function WorkflowPage({ searchParams }: WorkflowPageProps) 
 			<div className='mb-6'>
 				<h1 className='text-2xl font-medium'>{space.name}</h1>
 			</div>
-			<KanbanBoard spaceId={space.id} initialColumns={columns ?? []} initialVacancies={vacancies ?? []} />
+			<KanbanBoard
+				key={space.id}
+				spaceId={space.id}
+				initialColumns={columns ?? []}
+				initialVacancies={vacancies ?? []}
+			/>
 		</div>
 	)
 }

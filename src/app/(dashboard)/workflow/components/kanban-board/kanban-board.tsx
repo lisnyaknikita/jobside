@@ -21,12 +21,12 @@ import { KanbanColumn } from './components/kanban-column/kanban-column'
 import { VacancyCard } from './components/vacancy-card/vacancy-card'
 
 interface KanbanBoardProps {
-	spaceId?: string
+	spaceId: string
 	initialColumns: Column[]
 	initialVacancies: Vacancy[]
 }
 
-export function KanbanBoard({ initialColumns, initialVacancies }: KanbanBoardProps) {
+export function KanbanBoard({ spaceId, initialColumns, initialVacancies }: KanbanBoardProps) {
 	const [columns] = useState(initialColumns)
 	const [vacancies, setVacancies] = useState(initialVacancies)
 	const [activeVacancy, setActiveVacancy] = useState<Vacancy | null>(null)
@@ -34,10 +34,10 @@ export function KanbanBoard({ initialColumns, initialVacancies }: KanbanBoardPro
 
 	const sensors = useSensors(
 		useSensor(PointerSensor, {
-			activationConstraint: { distance: 8 }, // предотвращает случайный drag при клике
+			activationConstraint: { distance: 8 },
 		}),
 		useSensor(TouchSensor, {
-			activationConstraint: { delay: 200, tolerance: 8 }, // для мобилок
+			activationConstraint: { delay: 200, tolerance: 8 },
 		})
 	)
 
@@ -63,13 +63,11 @@ export function KanbanBoard({ initialColumns, initialVacancies }: KanbanBoardPro
 
 		if (!isActiveVacancy) return
 
-		// Перетаскивание над другой карточкой
 		if (isActiveVacancy && isOverVacancy) {
 			setVacancies(prev => {
 				const activeIndex = prev.findIndex(v => v.id === activeId)
 				const overIndex = prev.findIndex(v => v.id === overId)
 
-				// Меняем column_id если карточки в разных колонках
 				if (prev[activeIndex].column_id !== prev[overIndex].column_id) {
 					const updated = [...prev]
 					updated[activeIndex] = { ...updated[activeIndex], column_id: prev[overIndex].column_id }
@@ -80,7 +78,6 @@ export function KanbanBoard({ initialColumns, initialVacancies }: KanbanBoardPro
 			})
 		}
 
-		// Перетаскивание над колонкой (в пустую колонку)
 		if (isActiveVacancy && isOverColumn) {
 			setVacancies(prev => {
 				const activeIndex = prev.findIndex(v => v.id === activeId)
@@ -101,13 +98,16 @@ export function KanbanBoard({ initialColumns, initialVacancies }: KanbanBoardPro
 			const vacancy = vacancies.find(v => v.id === active.id)
 			if (!vacancy) return
 
-			// Сохраняем новый порядок и колонку в БД
 			await updateVacancyColumnAction(
 				vacancy.id,
 				vacancy.column_id,
 				vacancies.filter(v => v.column_id === vacancy.column_id).map((v, i) => ({ id: v.id, order: i }))
 			)
 		}
+	}
+
+	const addVacancy = (newVacancy: Vacancy) => {
+		setVacancies(prev => [...prev, newVacancy])
 	}
 
 	const columnIds = columns.map(c => c.id)
@@ -136,12 +136,13 @@ export function KanbanBoard({ initialColumns, initialVacancies }: KanbanBoardPro
 							<KanbanColumn
 								key={column.id}
 								column={column}
+								spaceId={spaceId!}
 								vacancies={vacancies.filter(v => v.column_id === column.id)}
+								onVacancyCreated={addVacancy}
 							/>
 						))}
 					</SortableContext>
 
-					{/* DragOverlay — карточка которая "летит" во время drag */}
 					{mounted &&
 						createPortal(
 							<DragOverlay>{activeVacancy && <VacancyCard vacancy={activeVacancy} overlay />}</DragOverlay>,
