@@ -7,12 +7,23 @@ export type Column = {
 
 export type Vacancy = {
 	id: string
+	user_id: string
+	space_id: string
+	column_id: string | null
 	position: string
 	company: string
 	description: string | null
 	url: string | null
+	salary: string | null
+	location: string | null
+	contact: string | null
 	order: number
-	deadline: string | null
 	created_at: string
-	column_id: string
+	vacancy_tags: { tags: Tag[] }[]
+}
+
+export type Tag = {
+	id: string
+	name: string
+	color: string
 }

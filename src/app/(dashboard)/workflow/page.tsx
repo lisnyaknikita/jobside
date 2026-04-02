@@ -23,11 +23,18 @@ export default async function WorkflowPage({ searchParams }: WorkflowPageProps) 
 
 	const { data: vacancies } = await supabase
 		.from('vacancies')
-		.select('id, position, company, description, url, order, deadline, created_at, column_id')
+		.select(
+			`
+			id, position, company, description, url, 
+			salary, location, contact, order, created_at, 
+			column_id, space_id, user_id,
+			vacancy_tags (
+				tags (id, name, color)
+			)
+		`
+		)
 		.eq('space_id', space.id)
 		.order('order')
-
-	console.log(columns)
 
 	return (
 		<div className='flex flex-col h-full p-6'>

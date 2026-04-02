@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils'
 import { Vacancy } from '@/types/kanban'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { Calendar, ExternalLink } from 'lucide-react'
+import { ExternalLink, MapPin } from 'lucide-react'
 import Link from 'next/link'
 
 interface VacancyCardProps {
@@ -22,6 +22,10 @@ export function VacancyCard({ vacancy, overlay }: VacancyCardProps) {
 		transform: CSS.Transform.toString(transform),
 		transition,
 	}
+
+	const tags = vacancy.vacancy_tags?.flatMap(vt => vt.tags) ?? []
+	const visibleTags = tags.slice(0, 2)
+	const hiddenCount = tags.length - visibleTags.length
 
 	return (
 		<div
@@ -50,20 +54,38 @@ export function VacancyCard({ vacancy, overlay }: VacancyCardProps) {
 							onClick={e => e.stopPropagation()}
 							className='shrink-0 p-1 rounded hover:bg-muted transition-colors'
 						>
-							<ExternalLink className='size-3 text-muted-foreground' />
+							<ExternalLink className='size-4 text-muted-foreground' />
 						</Link>
 					)}
 				</div>
-
-				{vacancy.deadline && (
-					<div className='flex items-center gap-1 mt-1'>
-						<Calendar className='size-3 text-muted-foreground' />
-						<span className='text-xs text-muted-foreground'>
-							{new Date(vacancy.deadline).toLocaleDateString('en-US', {
-								month: 'short',
-								day: 'numeric',
-							})}
-						</span>
+				{visibleTags.length > 0 && (
+					<div className='flex flex-wrap gap-1'>
+						{visibleTags.map(tag => (
+							<span
+								key={tag.id}
+								className='text-xs px-1.5 py-0.5 rounded-md font-medium'
+								style={{
+									backgroundColor: tag.color + '20',
+									color: tag.color,
+								}}
+							>
+								{tag.name}
+							</span>
+						))}
+						{hiddenCount > 0 && (
+							<span className='text-xs px-1.5 py-0.5 rounded-md bg-muted text-muted-foreground'>+{hiddenCount}</span>
+						)}
+					</div>
+				)}
+				{(vacancy.location || vacancy.salary) && (
+					<div className='flex items-center justify-between gap-2 mt-0.5'>
+						{vacancy.location && (
+							<div className='flex items-center gap-1 min-w-0'>
+								<MapPin className='size-3 text-muted-foreground shrink-0' />
+								<span className='text-xs text-muted-foreground truncate'>{vacancy.location}</span>
+							</div>
+						)}
+						{vacancy.salary && <span className='text-xs text-muted-foreground shrink-0 ml-auto'>{vacancy.salary}</span>}
 					</div>
 				)}
 			</div>
