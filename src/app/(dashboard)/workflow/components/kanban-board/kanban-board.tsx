@@ -18,6 +18,7 @@ import { SortableContext, arrayMove, horizontalListSortingStrategy } from '@dnd-
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { KanbanColumn } from './components/kanban-column/kanban-column'
+import { VacancyModal } from './components/vacancy-card/components/vacancy-modal/vacancy-modal'
 import { VacancyCard } from './components/vacancy-card/vacancy-card'
 
 interface KanbanBoardProps {
@@ -31,6 +32,7 @@ export function KanbanBoard({ spaceId, initialColumns, initialVacancies }: Kanba
 	const [vacancies, setVacancies] = useState(initialVacancies)
 	const [activeVacancy, setActiveVacancy] = useState<Vacancy | null>(null)
 	const [mounted, setMounted] = useState(false)
+	const [selectedVacancy, setSelectedVacancy] = useState<Vacancy | null>(null)
 
 	const sensors = useSensors(
 		useSensor(PointerSensor, {
@@ -110,6 +112,22 @@ export function KanbanBoard({ spaceId, initialColumns, initialVacancies }: Kanba
 		setVacancies(prev => [...prev, newVacancy])
 	}
 
+	function handleVacancyClick(vacancy: Vacancy) {
+		setSelectedVacancy(vacancy)
+	}
+
+	function handleVacancyUpdate(updated: Partial<Vacancy>) {
+		setVacancies(prev => prev.map(v => (v.id === selectedVacancy?.id ? { ...v, ...updated } : v)))
+		if (selectedVacancy) {
+			setSelectedVacancy(prev => (prev ? { ...prev, ...updated } : null))
+		}
+	}
+
+	function handleVacancyDelete(id: string) {
+		setVacancies(prev => prev.filter(v => v.id !== id))
+		setSelectedVacancy(null)
+	}
+
 	const columnIds = columns.map(c => c.id)
 
 	useEffect(() => {
@@ -122,34 +140,51 @@ export function KanbanBoard({ spaceId, initialColumns, initialVacancies }: Kanba
 	}
 
 	return (
-		<div className='flex-1 overflow-x-auto'>
-			<div className='flex gap-4 p-6 h-full min-w-max'>
-				<DndContext
-					sensors={sensors}
-					collisionDetection={closestCorners}
-					onDragStart={onDragStart}
-					onDragOver={onDragOver}
-					onDragEnd={onDragEnd}
-				>
-					<SortableContext items={columnIds} strategy={horizontalListSortingStrategy}>
-						{columns.map(column => (
-							<KanbanColumn
-								key={column.id}
-								column={column}
-								spaceId={spaceId!}
-								vacancies={vacancies.filter(v => v.column_id === column.id)}
-								onVacancyCreated={addVacancy}
-							/>
-						))}
-					</SortableContext>
+		<>
+			<div className='flex-1 overflow-x-auto'>
+				<div className='flex gap-4 p-6 h-full min-w-max'>
+					<DndContext
+						sensors={sensors}
+						collisionDetection={closestCorners}
+						onDragStart={onDragStart}
+						onDragOver={onDragOver}
+						onDragEnd={onDragEnd}
+					>
+						<SortableContext items={columnIds} strategy={horizontalListSortingStrategy}>
+							{columns.map(column => (
+								<KanbanColumn
+									key={column.id}
+									column={column}
+									spaceId={spaceId!}
+									vacancies={vacancies.filter(v => v.column_id === column.id)}
+									onVacancyCreated={addVacancy}
+									onVacancyClick={handleVacancyClick}
+								/>
+							))}
+						</SortableContext>
 
-					{mounted &&
-						createPortal(
-							<DragOverlay>{activeVacancy && <VacancyCard vacancy={activeVacancy} overlay />}</DragOverlay>,
-							document.body
-						)}
-				</DndContext>
+						{mounted &&
+							createPortal(
+								<DragOverlay>
+									{activeVacancy && <VacancyCard vacancy={activeVacancy} overlay onVacancyClick={handleVacancyClick} />}
+								</DragOverlay>,
+								document.body
+							)}
+					</DndContext>
+				</div>
 			</div>
-		</div>
+			{selectedVacancy && (
+				<VacancyModal
+					vacancy={selectedVacancy}
+					columns={columns}
+					open={!!selectedVacancy}
+					onOpenChange={open => {
+						if (!open) setSelectedVacancy(null)
+					}}
+					onUpdate={handleVacancyUpdate}
+					onDelete={handleVacancyDelete}
+				/>
+			)}
+		</>
 	)
 }

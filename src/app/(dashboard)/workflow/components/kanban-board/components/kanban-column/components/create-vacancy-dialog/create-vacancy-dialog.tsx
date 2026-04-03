@@ -9,7 +9,7 @@ import { Vacancy } from '@/types/kanban'
 import { X } from 'lucide-react'
 import { useRef, useState } from 'react'
 
-const TAG_COLORS = ['#818cf8', '#34d399', '#fbbf24', '#f472b6', '#22d3ee', '#60a5fa', '#fb923c', '#a78bfa']
+export const TAG_COLORS = ['#818cf8', '#34d399', '#fbbf24', '#f472b6', '#22d3ee', '#60a5fa', '#fb923c', '#a78bfa']
 
 interface CreateVacancyDialogProps {
 	open: boolean

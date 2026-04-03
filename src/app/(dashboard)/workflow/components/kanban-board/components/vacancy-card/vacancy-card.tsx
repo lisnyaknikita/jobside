@@ -10,9 +10,10 @@ import Link from 'next/link'
 interface VacancyCardProps {
 	vacancy: Vacancy
 	overlay?: boolean
+	onVacancyClick: (vacancy: Vacancy) => void
 }
 
-export function VacancyCard({ vacancy, overlay }: VacancyCardProps) {
+export function VacancyCard({ vacancy, overlay, onVacancyClick }: VacancyCardProps) {
 	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
 		id: vacancy.id,
 		data: { type: 'vacancy', vacancy },
@@ -39,12 +40,13 @@ export function VacancyCard({ vacancy, overlay }: VacancyCardProps) {
 				isDragging && 'opacity-40',
 				overlay && 'shadow-lg rotate-1 cursor-grabbing'
 			)}
+			onClick={() => !isDragging && onVacancyClick(vacancy)}
 		>
 			<div className='flex flex-col gap-1.5'>
 				<div className='flex items-start justify-between gap-2'>
 					<div>
-						<p className='text-sm font-medium leading-tight'>{vacancy.position}</p>
-						<p className='text-xs text-muted-foreground mt-0.5'>{vacancy.company}</p>
+						<p className='text-sm font-medium leading-tight line-clamp-1'>{vacancy.position}</p>
+						<p className='text-xs text-muted-foreground mt-0.5 line-clamp-2'>{vacancy.company}</p>
 					</div>
 					{vacancy.url && (
 						<Link

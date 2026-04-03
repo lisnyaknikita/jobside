@@ -96,3 +96,82 @@ export async function updateVacancyColumnAction(
 
 	revalidatePath('/workflow')
 }
+
+export async function updateVacancyAction(
+	id: string,
+	fields: Partial<
+		Pick<Vacancy, 'position' | 'company' | 'description' | 'url' | 'salary' | 'location' | 'contact' | 'column_id'>
+	>
+) {
+	const supabase = await createClient()
+	const { error } = await supabase.from('vacancies').update(fields).eq('id', id)
+	if (error) return { error: error.message }
+	revalidatePath('/workflow')
+}
+
+export async function deleteVacancyAction(id: string) {
+	const supabase = await createClient()
+	const { error } = await supabase.from('vacancies').delete().eq('id', id)
+	if (error) return { error: error.message }
+	revalidatePath('/workflow')
+}
+
+export async function createNoteAction(vacancyId: string, content: string) {
+	const supabase = await createClient()
+	const { data, error } = await supabase
+		.from('notes')
+		.insert({ vacancy_id: vacancyId, content })
+		.select('id, content, created_at, vacancy_id')
+		.single()
+	if (error) return { error: error.message }
+	return { data }
+}
+
+export async function updateNoteAction(id: string, content: string) {
+	const supabase = await createClient()
+	const { data, error } = await supabase.from('notes').update({ content }).eq('id', id).select().single()
+
+	if (error) return { error: error.message }
+	return { data }
+}
+
+export async function deleteNoteAction(id: string) {
+	const supabase = await createClient()
+	const { error } = await supabase.from('notes').delete().eq('id', id)
+	if (error) return { error: error.message }
+	revalidatePath('/workflow')
+}
+
+export async function addTagToVacancyAction(vacancyId: string, tagName: string, color: string) {
+	const supabase = await createClient()
+
+	let { data: tag } = await supabase.from('tags').select('id, name, color').eq('name', tagName.trim()).maybeSingle()
+
+	if (!tag) {
+		const { data: newTag, error: tagError } = await supabase
+			.from('tags')
+			.insert({ name: tagName.trim(), color })
+			.select()
+			.single()
+
+		if (tagError) return { error: tagError.message }
+		tag = newTag
+	}
+
+	const { error: linkError } = await supabase.from('vacancy_tags').insert({ vacancy_id: vacancyId, tag_id: tag?.id })
+
+	if (linkError) return { error: linkError.message }
+
+	revalidatePath('/workflow')
+	return { data: tag }
+}
+
+export async function removeTagFromVacancyAction(vacancyId: string, tagId: string) {
+	const supabase = await createClient()
+
+	const { error } = await supabase.from('vacancy_tags').delete().eq('vacancy_id', vacancyId).eq('tag_id', tagId)
+
+	if (error) return { error: error.message }
+
+	revalidatePath('/workflow')
+}

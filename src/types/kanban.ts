@@ -27,3 +27,10 @@ export type Tag = {
 	name: string
 	color: string
 }
+
+export type Note = {
+	id: string
+	vacancy_id: string
+	content: string
+	created_at: string
+}

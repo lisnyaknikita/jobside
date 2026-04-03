@@ -13,9 +13,10 @@ interface KanbanColumnProps {
 	vacancies: Vacancy[]
 	spaceId: string
 	onVacancyCreated: (vacancy: Vacancy) => void
+	onVacancyClick: (vacancy: Vacancy) => void
 }
 
-export function KanbanColumn({ spaceId, onVacancyCreated, column, vacancies }: KanbanColumnProps) {
+export function KanbanColumn({ spaceId, onVacancyCreated, column, vacancies, onVacancyClick }: KanbanColumnProps) {
 	const [isDialogOpen, setIsDialogOpen] = useState(false)
 
 	const { setNodeRef } = useDroppable({
@@ -39,7 +40,7 @@ export function KanbanColumn({ spaceId, onVacancyCreated, column, vacancies }: K
 			<div ref={setNodeRef} className='flex flex-col gap-2 flex-1 min-h-20 rounded-xl bg-muted/40 p-2'>
 				<SortableContext items={vacancyIds} strategy={verticalListSortingStrategy}>
 					{vacancies.map(vacancy => (
-						<VacancyCard key={vacancy.id} vacancy={vacancy} />
+						<VacancyCard key={vacancy.id} vacancy={vacancy} onVacancyClick={onVacancyClick} />
 					))}
 				</SortableContext>
 			</div>
