@@ -1,10 +1,10 @@
 'use client'
 
+import { TAG_COLORS } from '@/hooks/use-vacancy-tags'
 import { addTagToVacancyAction, removeTagFromVacancyAction } from '@/lib/actions/vacancies'
 import { Tag } from '@/types/kanban'
-import { Plus, X } from 'lucide-react'
+import { Loader2, Plus, X } from 'lucide-react'
 import { useState } from 'react'
-import { TAG_COLORS } from '../../../../../kanban-column/components/create-vacancy-dialog/create-vacancy-dialog'
 
 interface VacancyTagsEditorProps {
 	vacancyId: string
@@ -15,25 +15,36 @@ export function VacancyTagsEditor({ vacancyId, tags: initialTags }: VacancyTagsE
 	const [tags, setTags] = useState(initialTags)
 	const [isAdding, setIsAdding] = useState(false)
 	const [inputValue, setInputValue] = useState('')
+	const [isPending, setIsPending] = useState(false)
 
 	async function handleAddTag() {
 		const name = inputValue.trim()
-		if (!name) return
+		if (!name || isPending) return
 
+		setIsPending(true)
 		const randomColor = TAG_COLORS[Math.floor(Math.random() * TAG_COLORS.length)]
 
-		const result = await addTagToVacancyAction(vacancyId, name, randomColor)
-
-		if (result.data) {
-			setTags(prev => [...prev, result.data!])
-			setInputValue('')
-			setIsAdding(false)
+		try {
+			const result = await addTagToVacancyAction(vacancyId, name, randomColor)
+			if (result.data) {
+				setTags(prev => [...prev, result.data!])
+				setInputValue('')
+				setIsAdding(false)
+			}
+		} finally {
+			setIsPending(false)
 		}
 	}
 
 	async function handleRemoveTag(tagId: string) {
+		const previousTags = tags
 		setTags(prev => prev.filter(t => t.id !== tagId))
-		await removeTagFromVacancyAction(vacancyId, tagId)
+
+		const result = await removeTagFromVacancyAction(vacancyId, tagId)
+
+		if (result?.error) {
+			setTags(previousTags)
+		}
 	}
 
 	return (
@@ -58,20 +69,22 @@ export function VacancyTagsEditor({ vacancyId, tags: initialTags }: VacancyTagsE
 				</span>
 			))}
 			{isAdding ? (
-				<input
-					autoFocus
-					value={inputValue}
-					onChange={e => setInputValue(e.target.value)}
-					onBlur={() => {
-						if (!inputValue) setIsAdding(false)
-					}}
-					onKeyDown={e => {
-						if (e.key === 'Enter') handleAddTag()
-						if (e.key === 'Escape') setIsAdding(false)
-					}}
-					placeholder='Tag name...'
-					className='text-xs px-2 py-0.5 rounded-md border border-primary bg-background outline-none w-24'
-				/>
+				<div className='relative flex items-center'>
+					<input
+						autoFocus
+						value={inputValue}
+						onChange={e => setInputValue(e.target.value)}
+						onBlur={() => !inputValue && setIsAdding(false)}
+						onKeyDown={e => {
+							if (e.key === 'Enter') handleAddTag()
+							if (e.key === 'Escape') setIsAdding(false)
+						}}
+						disabled={isPending}
+						placeholder='Tag...'
+						className='text-[11px] px-2 py-0.5 rounded-md border border-primary bg-background outline-none w-20'
+					/>
+					{isPending && <Loader2 className='absolute -right-5 size-3 animate-spin text-muted-foreground' />}
+				</div>
 			) : (
 				<button
 					onClick={() => setIsAdding(true)}
