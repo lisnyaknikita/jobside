@@ -94,6 +94,7 @@ export type Database = {
       spaces: {
         Row: {
           created_at: string | null
+          icon: string
           id: string
           name: string
           position: number
@@ -101,6 +102,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          icon?: string
           id?: string
           name: string
           position?: number
@@ -108,6 +110,7 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          icon?: string
           id?: string
           name?: string
           position?: number
@@ -169,12 +172,14 @@ export type Database = {
         Row: {
           column_id: string | null
           company: string
+          contact: string | null
           created_at: string | null
-          deadline: string | null
           description: string | null
           id: string
+          location: string | null
           order: number
           position: string
+          salary: string | null
           space_id: string | null
           url: string | null
           user_id: string
@@ -182,12 +187,14 @@ export type Database = {
         Insert: {
           column_id?: string | null
           company: string
+          contact?: string | null
           created_at?: string | null
-          deadline?: string | null
           description?: string | null
           id?: string
+          location?: string | null
           order?: number
           position: string
+          salary?: string | null
           space_id?: string | null
           url?: string | null
           user_id: string
@@ -195,12 +202,14 @@ export type Database = {
         Update: {
           column_id?: string | null
           company?: string
+          contact?: string | null
           created_at?: string | null
-          deadline?: string | null
           description?: string | null
           id?: string
+          location?: string | null
           order?: number
           position?: string
+          salary?: string | null
           space_id?: string | null
           url?: string | null
           user_id?: string
