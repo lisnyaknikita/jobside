@@ -12,6 +12,7 @@ interface ModalLeftColumnProps {
 	vacancy: Vacancy
 	notes: Note[]
 	isNotesLoading: boolean
+	hasDescription: boolean
 	onFieldChange: (field: keyof Vacancy, value: string) => void
 	onAddNote: () => void
 	onNoteClick: (note: Note) => void
@@ -23,6 +24,7 @@ export function ModalLeftColumn({
 	vacancy,
 	notes,
 	isNotesLoading,
+	hasDescription,
 	onFieldChange,
 	onAddNote,
 	onNoteClick,
@@ -41,8 +43,14 @@ export function ModalLeftColumn({
 					onChange={e => onFieldChange('description', e.target.value)}
 					placeholder='Add description...'
 					rows={4}
-					className='w-full text-sm bg-muted/40 rounded-lg p-3 border border-transparent focus:border-border focus:outline-none resize-none placeholder:text-muted-foreground/50'
+					className='w-full text-sm bg-muted/40 rounded-lg p-3 border border-transparent focus:border-border focus:outline-none resize-vertical placeholder:text-muted-foreground/50'
 				/>
+				{!hasDescription && (
+					<p className='text-xs text-muted-foreground mt-1.5 flex items-center gap-1'>
+						<span className='text-amber-500'>⚠</span>
+						Paste the job description here for a more accurate cover letter
+					</p>
+				)}
 			</div>
 
 			<div>
@@ -75,13 +83,20 @@ export function ModalLeftColumn({
 
 			<div>
 				<p className='text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2'>Cover letter</p>
-				<Link
-					href={`/ai-lab?vacancy=${vacancy.id}`}
-					className='flex items-center gap-2 px-3 py-2.5 rounded-lg border border-border hover:bg-muted transition-colors text-sm text-muted-foreground'
-				>
-					<ExternalLink className='size-3.5' />
-					Generate with AI Lab
-				</Link>
+				{hasDescription ? (
+					<Link
+						href={`/ai-lab?vacancy=${vacancy.id}`}
+						className='flex items-center gap-2 px-3 py-2.5 rounded-lg border border-border hover:bg-muted transition-colors text-sm text-muted-foreground'
+					>
+						<ExternalLink className='size-3.5' />
+						Generate with AI Lab
+					</Link>
+				) : (
+					<div className='flex items-center gap-2 px-3 py-2.5 rounded-lg border border-dashed border-border text-sm text-muted-foreground/50 cursor-not-allowed'>
+						<ExternalLink className='size-3.5' />
+						Generate with AI Lab
+					</div>
+				)}
 			</div>
 
 			<div className='flex items-center gap-1 mt-auto'>

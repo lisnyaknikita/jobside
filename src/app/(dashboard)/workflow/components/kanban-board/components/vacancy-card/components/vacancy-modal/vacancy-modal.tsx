@@ -36,6 +36,7 @@ export function VacancyModal({ vacancy, columns, open, onOpenChange, onUpdate, o
 		handleDeleteVacancy,
 		openNoteEditor,
 		closeNoteEditor,
+		hasDescription,
 	} = useVacancyModal({
 		vacancy,
 		onUpdate,
@@ -73,6 +74,7 @@ export function VacancyModal({ vacancy, columns, open, onOpenChange, onUpdate, o
 							vacancy={vacancy}
 							notes={notes}
 							isNotesLoading={isNotesLoading}
+							hasDescription={hasDescription}
 							onFieldChange={handleFieldChange}
 							onAddNote={() => openNoteEditor()}
 							onNoteClick={openNoteEditor}
