@@ -1,6 +1,6 @@
 import { IconOption } from '@/lib/constants/icons'
 
-export interface Space {
+export type Space = {
 	id: string
 	name: string
 	icon: IconOption

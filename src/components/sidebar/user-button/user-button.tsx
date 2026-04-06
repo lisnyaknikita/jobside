@@ -14,9 +14,9 @@ import {
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar'
 import { logoutAction } from '@/lib/actions/auth'
 import { BadgeCheck, ChevronsUpDown, LogOut, Settings } from 'lucide-react'
-import { ModeToggle } from '../mode-toggle/mode-toggle'
+import { SettingsDialog } from '../settings-dialog/settings-dialog'
 
-export function UserButton({ user }: { user: { name: string; email: string; avatar: string } }) {
+export function UserButton({ user }: { user: { name: string; email: string; avatar: string; experience: string } }) {
 	const { isMobile } = useSidebar()
 
 	return (
@@ -85,12 +85,7 @@ export function UserButton({ user }: { user: { name: string; email: string; avat
 						<DialogHeader>
 							<DialogTitle>Settings</DialogTitle>
 						</DialogHeader>
-						<div className='grid gap-4 py-4'>
-							<div className='flex justify-between items-center'>
-								<p className='text-sm text-muted-foreground'>Color theme</p>
-								<ModeToggle />
-							</div>
-						</div>
+						<SettingsDialog initialExperience={user.experience} />
 					</DialogContent>
 				</Dialog>
 			</SidebarMenuItem>
