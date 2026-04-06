@@ -1,7 +1,6 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
 
 import { type IconOption } from '@/lib/constants/icons'
 import { revalidatePath } from 'next/cache'
@@ -36,7 +35,7 @@ export async function createSpaceAction(formData: FormData) {
 		{ user_id: user.id, space_id: space.id, name: 'Rejected', type: 'rejected', position: 4, is_default: true },
 	])
 
-	redirect(`/workflow?space=${space.id}`)
+	return { data: space }
 }
 
 export async function renameSpaceAction(formData: FormData) {
@@ -63,12 +62,9 @@ export async function changeSpaceIconAction(id: string, icon: IconOption) {
 export async function deleteSpaceAction(id: string) {
 	const supabase = await createClient()
 
-	const { count } = await supabase.from('spaces').select('*', { count: 'exact', head: true })
-
-	if ((count ?? 0) <= 1) return { error: 'Cannot delete the last space' }
-
 	const { error } = await supabase.from('spaces').delete().eq('id', id)
 
 	if (error) return { error: error.message }
+
 	revalidatePath('/', 'layout')
 }
