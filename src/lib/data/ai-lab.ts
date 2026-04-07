@@ -18,7 +18,12 @@ export async function getAiLabData(vacancyId: string | undefined) {
 	const [{ data: userProfile }, { data: vacancy }] = await Promise.all([
 		supabase.from('users').select('experience').eq('id', user.id).single(),
 		vacancyId
-			? supabase.from('vacancies').select('id, position, company, description, url').eq('id', vacancyId).single()
+			? supabase
+					.from('vacancies')
+					.select('id, position, company, description, url')
+					.eq('id', vacancyId)
+					.eq('user_id', user.id)
+					.maybeSingle()
 			: Promise.resolve({ data: null }),
 	])
 
