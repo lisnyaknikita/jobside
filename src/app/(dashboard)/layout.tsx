@@ -9,7 +9,7 @@ export default function BoardLayout({
 	return (
 		<SidebarProvider>
 			<AppSidebar />
-			<main>
+			<main className='w-screen'>
 				<SidebarTrigger />
 				{children}
 			</main>
