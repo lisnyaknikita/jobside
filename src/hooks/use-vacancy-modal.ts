@@ -24,7 +24,10 @@ export function useVacancyModal({ vacancy, onUpdate, onDelete, onClose }: UseVac
 	const [isNoteEditorOpen, setIsNoteEditorOpen] = useState(false)
 	const [editingNote, setEditingNote] = useState<Note | null>(null)
 	const [noteToDeleteId, setNoteToDeleteId] = useState<string | null>(null)
+	const [currentDescription, setCurrentDescription] = useState(vacancy.description ?? '')
 	const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+	const hasDescription = currentDescription.trim().length > 0
 
 	async function loadNotes() {
 		setIsNotesLoading(true)
@@ -40,6 +43,7 @@ export function useVacancyModal({ vacancy, onUpdate, onDelete, onClose }: UseVac
 	}
 
 	function handleFieldChange(field: keyof Vacancy, value: string) {
+		if (field === 'description') setCurrentDescription(value)
 		onUpdate({ [field]: value })
 		clearTimeout(saveTimer.current!)
 		saveTimer.current = setTimeout(() => {
@@ -103,5 +107,6 @@ export function useVacancyModal({ vacancy, onUpdate, onDelete, onClose }: UseVac
 		handleDeleteVacancy,
 		openNoteEditor,
 		closeNoteEditor,
+		hasDescription,
 	}
 }
