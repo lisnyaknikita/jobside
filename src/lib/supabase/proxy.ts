@@ -27,21 +27,27 @@ export async function updateSession(request: NextRequest) {
 		data: { user },
 	} = await supabase.auth.getUser()
 
-	const isAuthPage =
-		request.nextUrl.pathname === '/' ||
-		request.nextUrl.pathname.startsWith('/login') ||
-		request.nextUrl.pathname.startsWith('/register') ||
-		request.nextUrl.pathname.startsWith('/check-email') ||
-		request.nextUrl.pathname.startsWith('/forgot-password') ||
-		request.nextUrl.pathname.startsWith('/reset-password') ||
-		request.nextUrl.pathname.startsWith('/auth/callback')
+	const { pathname } = request.nextUrl
 
-	if (!user && !isAuthPage) {
+	const isGuestOnlyPage =
+		pathname === '/' ||
+		pathname.startsWith('/login') ||
+		pathname.startsWith('/register') ||
+		pathname.startsWith('/check-email') ||
+		pathname.startsWith('/forgot-password')
+
+	const isAuthFlowPage = pathname.startsWith('/reset-password') || pathname.startsWith('/auth/callback')
+
+	if (!user && !isGuestOnlyPage && !isAuthFlowPage) {
 		return NextResponse.redirect(new URL('/login', request.url))
 	}
 
-	if (user && isAuthPage) {
+	if (user && isGuestOnlyPage) {
 		return NextResponse.redirect(new URL('/workflow', request.url))
+	}
+
+	if (!user && pathname.startsWith('/reset-password')) {
+		return NextResponse.redirect(new URL('/login', request.url))
 	}
 
 	return supabaseResponse

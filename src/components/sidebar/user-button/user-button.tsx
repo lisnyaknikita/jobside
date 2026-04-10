@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar'
 import { logoutAction } from '@/lib/actions/auth'
-import { BadgeCheck, ChevronsUpDown, LogOut, Settings } from 'lucide-react'
+import { ChevronsUpDown, LogOut, Settings } from 'lucide-react'
 import { SettingsDialog } from '../settings-dialog/settings-dialog'
 
 export function UserButton({ user }: { user: { name: string; email: string; avatar: string; experience: string } }) {
@@ -66,10 +66,6 @@ export function UserButton({ user }: { user: { name: string; email: string; avat
 										Settings
 									</DropdownMenuItem>
 								</DialogTrigger>
-								<DropdownMenuItem>
-									<BadgeCheck className='mr-2 size-4' />
-									Account
-								</DropdownMenuItem>
 							</DropdownMenuGroup>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem
