@@ -90,11 +90,29 @@ export async function updateVacancyColumnAction(
 ) {
 	const supabase = await createClient()
 
-	await supabase.from('vacancies').update({ column_id: columnId }).eq('id', vacancyId)
+	const { error: columnUpdateError } = await supabase
+		.from('vacancies')
+		.update({ column_id: columnId })
+		.eq('id', vacancyId)
 
-	await Promise.all(orderedVacancies.map(({ id, order }) => supabase.from('vacancies').update({ order }).eq('id', id)))
+	if (columnUpdateError) {
+		console.error('Failed to update vacancy column:', columnUpdateError)
+		return { error: columnUpdateError.message }
+	}
+
+	const results = await Promise.all(
+		orderedVacancies.map(({ id, order }) => supabase.from('vacancies').update({ order }).eq('id', id))
+	)
+
+	const firstError = results.find(r => r.error)?.error
+
+	if (firstError) {
+		console.error('Failed to update vacancies order:', firstError)
+		return { error: firstError.message }
+	}
 
 	revalidatePath('/workflow')
+	return { success: true }
 }
 
 export async function updateVacancyAction(

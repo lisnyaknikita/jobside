@@ -15,9 +15,9 @@ export function NotesList({ notes, onDelete, onNoteClick }: NotesListProps) {
 	}
 
 	return (
-		<div className='flex flex-col gap-1.5 max-h-32.5 overflow-y-auto'>
+		<ul className='flex flex-col gap-1.5 max-h-32.5 overflow-y-auto'>
 			{notes.map(note => (
-				<div
+				<li
 					key={note.id}
 					onClick={() => onNoteClick(note)}
 					className='flex items-center gap-2 px-3 py-2 rounded-lg bg-muted/40 group cursor-pointer'
@@ -37,8 +37,8 @@ export function NotesList({ notes, onDelete, onNoteClick }: NotesListProps) {
 							<Trash2 className='size-3.5' />
 						</button>
 					</div>
-				</div>
+				</li>
 			))}
-		</div>
+		</ul>
 	)
 }
