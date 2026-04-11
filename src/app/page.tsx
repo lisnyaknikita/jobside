@@ -1,18 +1,17 @@
-import Link from 'next/link'
+import { CTA } from '@/components/landing/cta'
+import { Features } from '@/components/landing/features'
+import { Header } from '@/components/landing/header'
+import { Hero } from '@/components/landing/hero'
+import { KanbanPreview } from '@/components/landing/kanban-preview'
 
 export default function LandingPage() {
 	return (
-		<div className='flex min-h-screen flex-col items-center justify-center gap-4'>
-			<h1 className='text-4xl font-medium'>Job Tracker</h1>
-			<p className='text-gray-500'>Track your job applications in one place</p>
-			<div className='flex gap-3 mt-4'>
-				<Link href='/login' className='border rounded-lg px-4 py-2 text-sm hover:bg-gray-50'>
-					Login
-				</Link>
-				<Link href='/register' className='bg-black text-white rounded-lg px-4 py-2 text-sm'>
-					Get started
-				</Link>
-			</div>
+		<div className='min-h-screen container mx-auto'>
+			<Header />
+			<Hero />
+			<KanbanPreview />
+			<Features />
+			<CTA />
 		</div>
 	)
 }
