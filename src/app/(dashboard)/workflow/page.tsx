@@ -2,6 +2,7 @@ import { getColumns, getVacancies } from '@/lib/data/workflow'
 import { resolveActiveSpace } from '@/lib/utils/resolve-active-space'
 import { KanbanBoard } from './components/kanban-board/kanban-board'
 import { SetLastSpace } from './components/set-last-space/set-last-space'
+import { WorkflowEmptyState } from './components/workflow-empty-state/workflow-empty-state'
 
 interface WorkflowPageProps {
 	searchParams: Promise<{ space?: string }>
@@ -11,8 +12,13 @@ export default async function WorkflowPage({ searchParams }: WorkflowPageProps) 
 	const { space: spaceId } = await searchParams
 	const space = await resolveActiveSpace(spaceId)
 
-	if (!space) return null
-	//TODO: add empty state
+	if (!space) {
+		return (
+			<div className='flex flex-col h-full p-6'>
+				<WorkflowEmptyState />
+			</div>
+		)
+	}
 
 	const [columns, vacancies] = await Promise.all([getColumns(space.id), getVacancies(space.id)])
 

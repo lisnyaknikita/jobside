@@ -16,7 +16,7 @@ export function InputFields({
 	onExperienceChange,
 }: InputFieldsProps) {
 	return (
-		<div className='grid grid-cols-2 gap-4'>
+		<div className='grid lg:grid-cols-2 gap-4 md:grid-cols-1'>
 			<div className='flex flex-col gap-2'>
 				<div className='flex items-center justify-between'>
 					<p className='text-xs font-medium text-muted-foreground uppercase tracking-wide'>Job description</p>

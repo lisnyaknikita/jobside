@@ -30,9 +30,10 @@ interface SpaceItemMenuProps {
 	space: Space
 	isActive: boolean
 	trigger: React.ReactNode
+	onCloseParent: () => void
 }
 
-export function SpaceItemMenu({ space, isActive, trigger }: SpaceItemMenuProps) {
+export function SpaceItemMenu({ space, isActive, trigger, onCloseParent }: SpaceItemMenuProps) {
 	const router = useRouter()
 	const [renaming, setRenaming] = useState(false)
 	const [iconPickerOpen, setIconPickerOpen] = useState(false)
@@ -60,6 +61,7 @@ export function SpaceItemMenu({ space, isActive, trigger }: SpaceItemMenuProps) 
 		} finally {
 			setIsDeleting(false)
 			setDeleteOpen(false)
+			onCloseParent()
 		}
 	}
 

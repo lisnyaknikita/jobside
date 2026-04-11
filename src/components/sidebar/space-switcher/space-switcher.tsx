@@ -13,6 +13,7 @@ import {
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar'
 import { useCreateSpace } from '@/hooks/use-create-space'
 import { ICON_MAP, IconOption } from '@/lib/constants/icons'
+import { SpaceFormValues } from '@/lib/validations/space'
 import { Space } from '@/types/space'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
@@ -27,19 +28,21 @@ export function SpaceSwitcher({ spaces }: SpaceSwitcherProps) {
 	const { isMobile } = useSidebar()
 	const router = useRouter()
 	const searchParams = useSearchParams()
+	const [isMenuOpen, setIsMenuOpen] = useState(false)
 	const [dialogOpen, setDialogOpen] = useState(spaces.length === 0)
 
 	const isMandatoryOpen = spaces.length === 0
 
 	const effectiveOpen = isMandatoryOpen || dialogOpen
 
-	const { selectedIcon, setSelectedIcon, error, loading, handleCreate } = useCreateSpace()
+	const { error, loading, handleCreate } = useCreateSpace()
 
-	async function onFormSubmit(formData: FormData) {
-		const result = await handleCreate(formData)
+	async function onFormSubmit(values: SpaceFormValues) {
+		const result = await handleCreate(values)
 
 		if (result?.data) {
 			setDialogOpen(false)
+			setIsMenuOpen(false)
 			router.push(`/workflow?space=${result.data.id}`)
 			router.refresh()
 		}
@@ -58,7 +61,7 @@ export function SpaceSwitcher({ spaces }: SpaceSwitcherProps) {
 		<>
 			<SidebarMenu>
 				<SidebarMenuItem>
-					<DropdownMenu>
+					<DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
 						<DropdownMenuTrigger asChild>
 							<SidebarMenuButton
 								size='lg'
@@ -103,6 +106,7 @@ export function SpaceSwitcher({ spaces }: SpaceSwitcherProps) {
 											<SpaceItemMenu
 												space={space}
 												isActive={isActive}
+												onCloseParent={() => setIsMenuOpen(false)}
 												trigger={
 													<button
 														type='button'
@@ -137,16 +141,10 @@ export function SpaceSwitcher({ spaces }: SpaceSwitcherProps) {
 			</SidebarMenu>
 			<CreateSpaceDialog
 				open={effectiveOpen}
-				onOpenChange={open => {
-					if (!isMandatoryOpen) {
-						setDialogOpen(open)
-					}
-				}}
-				selectedIcon={selectedIcon}
-				onSelectIcon={setSelectedIcon}
+				onOpenChange={setDialogOpen}
 				onSubmit={onFormSubmit}
 				loading={loading}
-				error={error}
+				serverError={error}
 			/>
 		</>
 	)

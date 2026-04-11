@@ -26,10 +26,15 @@ export function NoteEditorModal({
 	const handleSave = async () => {
 		if (!content.trim()) return
 		setIsSaving(true)
-		await onSave(content)
-		setIsSaving(false)
-		onOpenChange(false)
-		setContent('')
+		try {
+			await onSave(content)
+			onOpenChange(false)
+			setContent('')
+		} catch (error) {
+			console.error('Failed to save note:', error)
+		} finally {
+			setIsSaving(false)
+		}
 	}
 
 	return (

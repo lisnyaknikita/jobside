@@ -53,7 +53,7 @@ export function VacancyModal({ vacancy, columns, open, onOpenChange, onUpdate, o
 	return (
 		<>
 			<Dialog open={open} onOpenChange={onOpenChange}>
-				<DialogContent className='sm:max-w-2xl p-0 gap-0 overflow-hidden'>
+				<DialogContent className='sm:max-w-xl md:max-w-3xl p-0 gap-0 overflow-hidden'>
 					<DialogTitle className='px-10 py-4 border-b'>
 						<div className='flex-1 min-w-0'>
 							<input
@@ -69,7 +69,7 @@ export function VacancyModal({ vacancy, columns, open, onOpenChange, onUpdate, o
 						</div>
 					</DialogTitle>
 
-					<div className='flex overflow-y-auto max-h-[70vh]'>
+					<div className='flex flex-col md:flex-row overflow-y-auto max-h-[70vh]'>
 						<ModalLeftColumn
 							vacancy={vacancy}
 							notes={notes}
