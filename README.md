@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Jobside - AI-Powered Job Application Tracker
 
-## Getting Started
+Jobside is a high-performance Kanban-based platform designed to streamline the job search process. It combines workspace management with AI integration to help developers and professionals track vacancies and generate personalized cover letters.
 
-First, run the development server:
+![Project Preview](https://cdn.jumpshare.com/preview/2OxsZNGNDi81bVk4vM6sezxZ5c4kHB-Jd4y2wVhPzZWGbhXVMKAC5r2tvzVyqsXiby6rTwHVRaUpmPdu4mq1ZGRsROjgk0NprqWEuxvSOJ0)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 💡 Motivation
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Jobside was built to solve a real problem: managing job applications across multiple platforms while generating tailored cover letters efficiently.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Most existing tools either lack customization or do not integrate AI in a practical way. This project focuses on combining structured job tracking with AI assistance in a single workflow.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🚀 Key Features
 
-## Learn More
+- **Multi-Space Management**: Organize different job search tracks (e.g., "Frontend", "Backend", "Freelance") with custom icons and settings.
+- **Smart Kanban Board**: Fully interactive board with drag-and-drop sorting (powered by `@dnd-kit`) and status updates.
+- **AI Cover Letter Generator**: Integrated Google Gemini AI that analyzes your stored experience and job descriptions to craft tailored cover letters.
+- **Advanced Task Management**: Detailed vacancy cards with tags, salary tracking, location status, and persistent notes.
+- **Secure Authentication**: Robust auth flow using Supabase (PKCE flow), including password reset and protected middleware routes.
+- **Responsive & Accessible UI**: Mobile-first design built with Tailwind CSS and Radix UI primitives for maximum accessibility.
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠️ Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Framework**: [Next.js 16 (App Router)](https://nextjs.org/)
+- **Language**: [TypeScript](https://www.typescript.org/)
+- **Database & Auth**: [Supabase](https://supabase.com/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Form Management**: [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/)
+- **Drag-and-Drop**: [@dnd-kit](https://dnd-kit.com/)
+- **AI Integration**: [Google Gemini SDK](https://ai.google.dev/)
+- **Icons**: [Lucide React](https://lucide.dev/)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🏗️ Technical Highlights
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Server Actions & Optimistic UI**: Used Next.js Server Actions for data mutations with optimistic updates to ensure a zero-latency feel for the user.
+- **Type-Safe Forms**: Implemented centralized validation schemas with Zod to maintain strict data integrity across client and server.
+- **Complex DnD Logic**: Engineered a vertical sorting strategy within columns that synchronizes the `order` field in the database, preventing "jumpy" UI during reorders.
+- **Custom Middleware**: Built a sophisticated auth-guard proxy to handle session persistence and smart redirects (e.g., handling the `next` parameter for password resets).
